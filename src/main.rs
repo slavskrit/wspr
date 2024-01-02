@@ -1,7 +1,4 @@
-use std::{
-    error, io,
-    process::{Command, Output},
-};
+use std::process::Command;
 use teloxide::{dispatching::dialogue::InMemStorage, net::Download, prelude::*};
 use tokio::fs;
 
@@ -34,28 +31,23 @@ async fn main() {
     .await;
 }
 
-fn transcode(path: &str) -> &str {
+fn transcode(path: &str) -> String {
     let output = Command::new("whisper").args([path, ARGS]).output();
 
     match output {
         Ok(output) => {
-            // Convert the captured stdout to a String
             if let Ok(stdout) = std::str::from_utf8(&output.stdout) {
-                // Print each line from the command's output
-                for line in stdout.lines() {
-                    println!("{}", line);
-                }
+                return String::from(stdout);
             } else {
-                eprintln!("Failed to parse command output");
+                log::error!("Counld not convert output of the audio: {path}");
+                return String::new();
             }
         }
-        Err(e) => {
-            // Handle any errors that might occur while executing the command
-            eprintln!("Command execution failed with error: {}", e);
+        Err(_) => {
+            log::error!("Counld not parse an audio by given path: {path}");
+            return String::new();
         }
     }
-
-    "test"
 }
 
 async fn start(bot: Bot, msg: Message) -> HandlerResult {
