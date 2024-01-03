@@ -58,7 +58,16 @@ async fn start(bot: Bot, msg: Message) -> HandlerResult {
             let path = format!("/tmp/{file_id}");
             let mut dst = fs::File::create(&path).await?;
             bot.download_file(&file.path, &mut dst).await?;
-            let output = transcode(&path);
+            let mut output = transcode(&path);
+            if output.is_empty() {
+                output = "Could not parse a voice message".to_string();
+            } else {
+                output = output
+                    .split("Skipping /tmp/")
+                    .next()
+                    .unwrap_or("")
+                    .to_string()
+            }
             bot.send_message(msg.chat.id, output).await?;
         }
         None => {

@@ -50,23 +50,34 @@ EOF
 # (e.g., debian@sha256:ac707220fbd7b67fc19b112cee8170b41a9e97f703f588b2cdbbcdcecdd8af57).
 FROM debian:bullseye-slim AS final
 
+
+RUN apt-get update -y && apt-get install -y \
+    ffmpeg \
+    python3-pip
+
+RUN pip3 install -U openai-whisper
+
+RUN touch ~/dummy.ogg
+RUN whisper ~/dummy.ogg --model medium
+
 # Create a non-privileged user that the app will run under.
 # See https://docs.docker.com/go/dockerfile-user-best-practices/
 ARG UID=10001
 RUN adduser \
     --disabled-password \
     --gecos "" \
-    --home "/nonexistent" \
+    # --home "/nonexistent" \
     --shell "/sbin/nologin" \
-    --no-create-home \
+    # --no-create-home \
     --uid "${UID}" \
     appuser
+
+# RUN sudo usermod -aG docker appuser
 USER appuser
 
 # Copy the executable from the "build" stage.
 COPY --from=build /bin/server /bin/
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-
 
 # Expose the port that the application listens on.
 EXPOSE 9000
