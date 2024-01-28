@@ -1,3 +1,5 @@
+![Logo](http://url/to/img.png)
+
 # Dockerized Whisper + Rust + Telegram API bot
 
 To run please execute:
