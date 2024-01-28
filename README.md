@@ -1,4 +1,4 @@
-![Logo](http://url/to/img.png)
+![Logo]([http://url/to/img.png](https://github.com/slavskrit/wspr/blob/b74d575e0531606159dd633f789cd71b208384a8/logo.png?raw=true))
 
 # Dockerized Whisper + Rust + Telegram API bot
 
