@@ -53,6 +53,7 @@ fn transcode(path: &str) -> String {
 async fn start(bot: Bot, msg: Message) -> HandlerResult {
     match msg.voice() {
         Some(p) => {
+            bot.send_message(msg.chat.id, "Started processing").await?;
             let file_id = &p.file.id;
             let file = bot.get_file(file_id).await?;
             let path = format!("/tmp/{file_id}");
