@@ -36,8 +36,6 @@ async fn transcode(path: &str) -> String {
         .current_dir("/tmp")
         .status();
 
-    println!("a1");
-
     match output {
         Ok(_output) => match fs::read_to_string(format!("{path}.txt")).await {
             Ok(result) => {
